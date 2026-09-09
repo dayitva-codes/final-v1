@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
+from app.core.config import settings
 from app.db.base import Base
 from app.db.seed import seed
 from app.db.session import SessionLocal, engine
@@ -9,6 +11,18 @@ from app.db.session import SessionLocal, engine
 from app.models import cadet, college, evaluation, mentor, user  # noqa: F401
 
 app = FastAPI(title="NCC Battalion Management System", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        origin.strip()
+        for origin in settings.cors_origins.split(",")
+        if origin.strip()
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")

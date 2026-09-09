@@ -24,14 +24,17 @@ export default function Login() {
     } finally {
       setBusy(false);
     }
+  }
 
-    async function handleGoogleLogin() {
-      setError('');
-      try {
-        await googleLogin();
-      } catch (err) {
-        setError(err.message);
-      }
+  async function handleGoogleLogin() {
+    setError('');
+    setBusy(true);
+    try {
+      await googleLogin();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
     }
   }
 

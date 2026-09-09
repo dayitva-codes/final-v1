@@ -14,10 +14,12 @@ Supabase pooled Postgres connection string — no code changes needed.
    URL (and `http://localhost:5173`) to the redirect URLs.
 3. Copy the Supabase JWT secret into `SUPABASE_JWT_SECRET` on the Render backend.
    The frontend uses only the public anon key; never expose the JWT secret.
-4. Deploy the backend as a Render Web Service with:
+4. Set `CORS_ORIGINS` on the backend to the exact frontend origin, for example
+   `https://ncc-command.onrender.com,http://localhost:5173` (no trailing slash).
+5. Deploy the backend as a Render Web Service with:
    `pip install -r requirements.txt` and
    `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-5. Deploy the `ncc-frontend-react/ncc-frontend-react` folder as a Render Static Site:
+6. Deploy the `frontend` folder as a Render Static Site:
    build `npm run build`, publish `dist`, and add `VITE_SUPABASE_URL`,
    `VITE_SUPABASE_ANON_KEY`, and `VITE_API_BASE_URL` environment variables.
 
