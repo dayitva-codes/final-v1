@@ -21,6 +21,10 @@ class CollegeCreate(BaseModel):
 
 @router.post("/battalions")
 def create_battalion(data: BattalionCreate, db: Session = Depends(get_db)):
+    existing = db.query(Battalion).filter(Battalion.code == data.code).first()
+    if existing:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail=f"Battalion with code '{data.code}' already exists")
     b = Battalion(**data.model_dump())
     db.add(b)
     db.commit()
@@ -35,6 +39,13 @@ def list_battalions(db: Session = Depends(get_db)):
 
 @router.post("/colleges")
 def create_college(data: CollegeCreate, db: Session = Depends(get_db)):
+    existing = db.query(College).filter(
+        College.battalion_id == data.battalion_id,
+        College.name == data.name
+    ).first()
+    if existing:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail=f"College '{data.name}' already exists in this battalion")
     c = College(**data.model_dump())
     db.add(c)
     db.commit()
