@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     secret_key: str = "change-this-secret-key-before-any-real-deployment"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24  # 1 day, generous for demoing
+    supabase_jwt_secret: str = ""
 
     class Config:
         env_file = ".env"

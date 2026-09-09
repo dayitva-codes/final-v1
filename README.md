@@ -3,8 +3,23 @@
 FastAPI + SQLAlchemy backend for cadet registration, mentor evaluation, dashboards,
 leaderboard, and an AI-generated performance insight.
 
-Uses **SQLite** for zero-setup local running. Swap `DATABASE_URL` to a Postgres URL
-in `.env` when you want to move off it — no code changes needed.
+Uses **SQLite** for zero-setup local running. For production, set `DATABASE_URL` to the
+Supabase pooled Postgres connection string — no code changes needed.
+
+## Production stack: Supabase + Render
+
+1. In Supabase, create a project and copy the pooled Postgres connection string into
+   `DATABASE_URL` on Render. Keep the password private.
+2. In Supabase Authentication → Providers, enable Google and add the Render frontend
+   URL (and `http://localhost:5173`) to the redirect URLs.
+3. Copy the Supabase JWT secret into `SUPABASE_JWT_SECRET` on the Render backend.
+   The frontend uses only the public anon key; never expose the JWT secret.
+4. Deploy the backend as a Render Web Service with:
+   `pip install -r requirements.txt` and
+   `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+5. Deploy the `ncc-frontend-react/ncc-frontend-react` folder as a Render Static Site:
+   build `npm run build`, publish `dist`, and add `VITE_SUPABASE_URL`,
+   `VITE_SUPABASE_ANON_KEY`, and `VITE_API_BASE_URL` environment variables.
 
 ## 1. Setup (2 minutes)
 

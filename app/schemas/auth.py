@@ -16,6 +16,10 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
+class SupabaseToken(BaseModel):
+    access_token: str
+
+
 class UserOut(BaseModel):
     id: int
     email: str
