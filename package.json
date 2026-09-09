@@ -1,0 +1,11 @@
+{
+  "name": "ncc-management-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NCC Battalion Management System - Full Stack",
+  "scripts": {
+    "dev": "node dev.js",
+    "test": "pytest test_app.py",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}

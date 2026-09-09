@@ -14,6 +14,7 @@ class MentorRegister(BaseModel):
 
 class MentorOut(BaseModel):
     id: int
+    user_id: int
     enrollment_number: str
     scope_level: ScopeLevelEnum
     college_id: int | None
