@@ -1,7 +1,18 @@
-const DEFAULT_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const isBrowser = typeof window !== 'undefined';
+const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const DEFAULT_BASE = import.meta.env.VITE_API_BASE_URL || (isLocalhost ? 'http://127.0.0.1:8000/api/v1' : '/api/v1');
 
 export function getApiBase() {
-  return localStorage.getItem('ncc_api_base') || DEFAULT_BASE;
+  if (!isBrowser) return DEFAULT_BASE;
+  const stored = localStorage.getItem('ncc_api_base');
+  
+  // If in production and stored URL is localhost, clear stale localhost URL
+  if (!isLocalhost && stored && (stored.includes('127.0.0.1') || stored.includes('localhost'))) {
+    localStorage.removeItem('ncc_api_base');
+    return DEFAULT_BASE;
+  }
+  return stored || DEFAULT_BASE;
 }
 
 export function setApiBase(url) {
