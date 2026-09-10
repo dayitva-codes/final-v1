@@ -1,129 +1,157 @@
-# 🇮🇳 NCC Battalion Management System
+# 🇮🇳 NCC Command & Battalion Management System
 
-A full-stack Cadet & Battalion Management platform built with **FastAPI**, **SQLAlchemy**, and **React + Vite**, featuring cadet enrollment validation, mentor evaluations, battalion leaderboards, and AI performance insights.
+> **Next-Gen Cadet & Battalion Operations OS** built with **FastAPI**, **SQLAlchemy**, **Supabase PostgreSQL**, and **React + Vite**. Features a cyber-command glassmorphism interface, strict validation rules, 9-dimensional cadet evaluations, real-time aggregate leaderboards, and AI performance regimens.
 
 ---
 
 ## ⚡ Quick Start (Single Command)
 
-You can launch **both the FastAPI backend and Vite frontend together** with a single command from the root directory:
+Launch both the **FastAPI Backend (Port 8000)** and **Vite Frontend (Port 5173)** together with a single command from the project root:
 
 ```bash
 npm run dev
 ```
 
-### Access URLs
-- 🌐 **Frontend Application**: [http://127.0.0.1:5173](http://127.0.0.1:5173)
-- 🔌 **Backend API**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- 📖 **Interactive Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-
-### 🔑 Default Credentials
-On startup, the system automatically initializes the database and seeds the administrator account:
-- **Email**: `admin@ncc.local`
-- **Password**: `admin123`
+### 🌐 Access URLs
+| Service | URL | Description |
+| :--- | :--- | :--- |
+| **Frontend Terminal** | [http://127.0.0.1:5173](http://127.0.0.1:5173) | Cyber-command user interface |
+| **Backend API Gateway** | [http://127.0.0.1:8000/api/v1](http://127.0.0.1:8000/api/v1) | FastAPI endpoints & health check |
+| **Interactive Swagger Docs** | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | Live API testing & schema docs |
 
 ---
 
-## 🛠️ First-Time Setup
+## 🔑 System Roles & Default Credentials
 
-If you are setting up the project on a fresh machine:
+| Role | Email | Password | Access & Responsibilities |
+| :--- | :--- | :--- | :--- |
+| **HQ Commander (Admin)** | `admin@ncc.local` | `admin123` | Setup Battalions, Affiliated Colleges, Verify Mentors |
+| **Battalion Mentor (ANO)** | `mentor@ncc.local` | `mentor123` | Score Cadets across 9 evaluation pillars |
+| **Active Cadet** | *Self-registered* | *User defined* | View Performance Dossier, Radar Metrics, AI Action Regimens |
 
-### 1. Backend Setup
+*Tip: Use the **`[HQ ADMIN]`**, **`[OFFICER MENTOR]`**, or **`[ACTIVE CADET]`** quick-fill preset buttons on the Login screen for instant authentication.*
+
+---
+
+## 🛡️ Limitation Rules & Validation Matrix
+
+The platform enforces strict enterprise validation rules across all inputs:
+
+### 1. 🔒 Passkey & Security Rules
+- **Minimum 8 Characters** strictly enforced.
+- **Dynamic 4-Tier Strength Meter** (*Weak / Fair / Strong / Cyber-Grade Encrypted*).
+- Visual requirement checklist verifying numbers, upper-case, and lower-case combinations.
+
+### 2. 📱 Phone & Identification Rules
+- **Mobile Numbers**: Exactly 10 digits required; automatically strips non-numeric characters.
+- **Battalion Codes**: Formatted into uppercase alphanumeric symbols (e.g. `1CG-BN`, `10MAH-BN`).
+
+### 3. 🎖️ NCC Wing & Gender Matrix
+| NCC Wing | Eligible Gender Divisions | Rules |
+| :--- | :--- | :--- |
+| **Army Wing** | `SD` (Senior Division - Male), `SW` (Senior Wing - Female) | Enforces senior collegiate divisions |
+| **Navy Wing** | `SD` (Senior Division - Male), `SW` (Senior Wing - Female) | Enforces naval collegiate criteria |
+| **Air Wing** | `SD` (Senior Division - Male), `SW` (Senior Wing - Female) | Enforces aviation training requirements |
+
+### 4. 🎯 Evaluation Scoring Parameters
+- Mentors assess cadets on **9 official dimensions**:
+  1. *Drill & Precision*
+  2. *Physical Fitness*
+  3. *Weapon Firing & Handling*
+  4. *Command & Leadership*
+  5. *NCC & Military Knowledge*
+  6. *Discipline & Conduct*
+  7. *Parade Punctuality*
+  8. *Teamwork & Morale*
+  9. *Camp & Drill Attendance*
+- Scores are calibrated on an interactive **0.0 to 10.0 scale slider** with real-time decimal precision and assessment badges (*ALPHA*, *BRAVO*, *CHARLIE*, *DELTA*).
+
+---
+
+## ☁️ Cloud Deployment (Vercel)
+
+The repository is pre-configured for instant **Serverless Deployment on Vercel** (`@vercel/python` + `@vercel/static-build`).
+
+### Vercel Project Settings
+- **Framework Preset**: `Other` (or `Vite`)
+- **Root Directory**: `./` (leave default root)
+- **Build Command**: `npm run build`
+- **Output Directory**: `frontend/dist`
+
+### Environment Variables (`.env`)
+Add the following keys in your Vercel Project Settings:
+
 ```bash
-# Windows
-python -m venv venv
-.\venv\Scripts\activate
-pip install -r requirements.txt
+# Database
+DATABASE_URL=postgresql://postgres.fmeudqnaezssadagvylc:Ncc2026Password!@aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres
 
-# Linux / macOS
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+# Security
+SECRET_KEY=local-dev-secret-key-ncc-battalion-system-2026
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+CORS_ORIGINS=*
 
-### 2. Frontend Setup
-```bash
-cd frontend
-npm install
-cd ..
-```
+# Supabase
+SUPABASE_URL=https://fmeudqnaezssadagvylc.supabase.co
+SUPABASE_JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtZXVkcW5hZXpzc2FkYWd2eWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODgwNjA4NiwiZXhwIjoyMTA0MzgyMDg2fQ.Kq6J9dW3NO6ahVVnZ11sEEZ_vwUdjlMSbZ_srdRRXJY
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtZXVkcW5hZXpzc2FkYWd2eWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODgwNjA4NiwiZXhwIjoyMTA0MzgyMDg2fQ.Kq6J9dW3NO6ahVVnZ11sEEZ_vwUdjlMSbZ_srdRRXJY
 
-### 3. Run Everything
-```bash
-npm run dev
+# Frontend Client
+VITE_SUPABASE_URL=https://fmeudqnaezssadagvylc.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtZXVkcW5hZXpzc2FkYWd2eWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODgwNjA4NiwiZXhwIjoyMTA0MzgyMDg2fQ.Kq6J9dW3NO6ahVVnZ11sEEZ_vwUdjlMSbZ_srdRRXJY
+VITE_API_BASE_URL=/api/v1
 ```
 
 ---
 
-## 🧪 Automated Testing
-
-Run the full end-to-end integration test suite:
-
-```bash
-# Windows
-.\venv\Scripts\pytest test_app.py
-
-# Linux / macOS
-pytest test_app.py
-```
-
-This tests:
-1. Health check endpoint
-2. Admin authentication & JWT token issuance
-3. Battalion & College creation
-4. Wing/Gender validation rule enforcement (e.g. rejection of `JD` + `female`, acceptance of `SW` + `female`)
-5. Mentor registration & Admin verification workflow
-6. 9 seeded evaluation criteria & score submissions
-7. Cadet score aggregation & Battalion Leaderboard calculations
-8. AI performance insight fallback generation
-
----
-
-## ☁️ Database & Supabase Configuration
-
-The system is configured to work out-of-the-box locally with **SQLite**, and can seamlessly connect to **Supabase** for production deployments.
-
-### Local SQLite Mode (Default)
-In `.env`:
-```env
-DATABASE_URL=sqlite:///./ncc.db
-```
-
-### Supabase Cloud Mode
-In `.env`:
-```env
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:6543/postgres
-SUPABASE_JWT_SECRET=[YOUR-SUPABASE-JWT-SECRET]
-```
-
-In `frontend/.env`:
-```env
-VITE_API_BASE_URL=http://127.0.0.1:8000/api/v1
-VITE_SUPABASE_URL=https://[PROJECT-REF].supabase.co
-VITE_SUPABASE_ANON_KEY=[YOUR-SUPABASE-ANON-KEY]
-```
-
----
-
-## 🏛️ System Architecture
+## 🏛️ Project Architecture
 
 ```
 ncc-management/
+├── api/
+│   └── index.py            # Vercel serverless Python gateway
 ├── app/
-│   ├── api/v1/         # API endpoints (Auth, Cadets, Mentors, Evaluations, Dashboard)
-│   ├── core/           # Security, JWT, configuration, dependencies
-│   ├── db/             # SQLAlchemy session, engine, and auto-seeder
-│   ├── models/         # Database models (User, Cadet, Mentor, College, Evaluation)
-│   ├── schemas/        # Pydantic validation schemas
-│   └── services/       # Core business logic & AI insight engine
+│   ├── api/v1/             # Endpoints (auth, battalions, colleges, cadets, mentors, evaluations, leaderboard)
+│   ├── core/               # Direct bcrypt security, JWT, config settings, dependencies
+│   ├── db/                 # PostgreSQL pooler session & database auto-seeder
+│   ├── models/             # SQLAlchemy schemas (User, Cadet, Mentor, Battalion, College, Evaluation)
+│   ├── schemas/            # Pydantic data validation schemas
+│   └── services/           # Business logic & AI insight engine
 ├── frontend/
 │   ├── src/
-│   │   ├── api/        # Unified API client & error handler
-│   │   ├── components/ # Reusable UI components
-│   │   ├── pages/      # Views (Login, Cadet/Mentor/Admin Dashboards, Leaderboard)
-│   │   └── lib/        # Supabase client connector
-├── dev.js              # Multi-process development runner
-├── package.json        # Root scripts (npm run dev)
-├── requirements.txt    # Python backend dependencies
-└── test_app.py         # End-to-end test suite
+│   │   ├── api/            # API client with auto-routing & smart error recovery
+│   │   ├── components/     # AppShell, PasswordStrengthMeter, TagGuide, ConfigBar, Form controls
+│   │   └── pages/          # Login, RegisterCadet, RegisterMentor, AdminHome, MentorHome, CadetHome, Leaderboard
+│   ├── index.html          # Military fonts & responsive container
+│   └── package.json        # Frontend build scripts
+├── dev.js                  # Multi-process Windows/Linux/macOS dev launcher
+├── package.json            # Root command scripts
+├── requirements.txt        # Backend dependencies (Python 3.10-3.12 compatible)
+├── vercel.json             # Serverless routing and static build mapping
+└── test_app.py             # End-to-end integration test suite
 ```
+
+---
+
+## 🧪 Integration Testing
+
+Run the automated test suite across all services:
+
+```bash
+pytest test_app.py
+```
+
+### Verified Test Assertions:
+1. API `/health` liveness probe.
+2. Admin authentication & JWT token generation.
+3. Battalion & Affiliated College creation.
+4. Wing & Gender validation matrix enforcement.
+5. Mentor registration & Admin verification workflow.
+6. 9 seeded evaluation criteria & score submissions.
+7. Real-time PostgreSQL leaderboard aggregations without stale caching.
+8. AI performance regimen synthesis.
+
+---
+
+## 📜 License & Acknowledgements
+Built for National Cadet Corps (NCC) battalion digital operations. Open-source under the MIT License.
