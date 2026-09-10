@@ -14,8 +14,17 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    token = auth_service.login(db, form_data.username, form_data.password)
-    return Token(access_token=token)
+    try:
+        token = auth_service.login(db, form_data.username, form_data.password)
+        return Token(access_token=token)
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Login error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Authentication server error: {str(e)}"
+        )
 
 
 @router.post("/supabase", response_model=Token)
