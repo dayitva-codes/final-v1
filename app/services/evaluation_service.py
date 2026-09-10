@@ -50,7 +50,7 @@ def get_cadet_score_summary(db: Session, cadet_id: int) -> list[CadetScoreSummar
         )
         .join(Evaluation, Evaluation.criterion_id == EvaluationCriterion.id)
         .filter(Evaluation.cadet_id == cadet_id)
-        .group_by(EvaluationCriterion.id)
+        .group_by(EvaluationCriterion.id, EvaluationCriterion.name, EvaluationCriterion.max_score)
         .all()
     )
     return [

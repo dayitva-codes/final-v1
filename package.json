@@ -5,7 +5,7 @@
   "description": "NCC Battalion Management System - Full Stack",
   "scripts": {
     "dev": "node dev.js",
-    "test": "pytest test_app.py",
-    "build:frontend": "npm --prefix frontend run build"
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "test": "pytest test_app.py"
   }
 }

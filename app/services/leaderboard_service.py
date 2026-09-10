@@ -27,7 +27,7 @@ def get_leaderboard(db: Session, battalion_id: int | None = None, limit: int = 1
         query = query.filter(College.battalion_id == battalion_id)
 
     rows = (
-        query.group_by(Cadet.id)
+        query.group_by(Cadet.id, Cadet.full_name, Cadet.enrollment_number, College.name)
         .order_by(func.avg(Evaluation.score).desc())
         .limit(limit)
         .all()
