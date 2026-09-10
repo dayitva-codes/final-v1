@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ErrorBanner } from '../components/Form';
+import { ErrorBanner, TagGuide, PasswordStrengthMeter } from '../components/Form';
 import ConfigBar from '../components/ConfigBar';
 
 export default function Login() {
@@ -12,8 +12,18 @@ export default function Login() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
+  function quickFill(fillEmail, fillPass) {
+    setEmail(fillEmail);
+    setPassword(fillPass);
+    setError('');
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters for login authentication.');
+      return;
+    }
     setError('');
     setBusy(true);
     try {
@@ -42,44 +52,103 @@ export default function Login() {
     <div className="auth-page">
       <ConfigBar />
       <div className="login-shell">
-        <div className="auth-brand">
-          <div className="brand-mark">N</div>
-          <span>NCC COMMAND</span>
-          <small>Cadet readiness, managed with purpose.</small>
-        </div>
-        <form className="login-card" onSubmit={handleSubmit}>
-          <div className="eyebrow">SECURE ACCESS</div>
-          <h1>Welcome back</h1>
-          <p className="sub">Sign in to your battalion workspace.</p>
+        <div className="login-card">
+          <div className="eyebrow">
+            <span className="live-pulse"></span>
+            <span>NCC CYBER-COMMAND GATEWAY</span>
+          </div>
+          <h1>Command Access</h1>
+          <p className="sub">Authenticate to access your battalion management console.</p>
+
           <ErrorBanner message={error} />
-          {googleEnabled && (
-            <>
-              <button type="button" className="google-btn" onClick={handleGoogleLogin} aria-label="Continue with Google">
-                <span className="google-g">G</span>
-                Continue with Google
-              </button>
-              <div className="auth-divider"><span>or use email</span></div>
-            </>
-          )}
-          <div className="field">
-            <label htmlFor="email">Email address</label>
-            <input id="email" value={email} onChange={e => setEmail(e.target.value)} type="email" required />
+
+          <div className="quick-fill-bar">
+            <span style={{ color: 'var(--text-dim)', fontSize: 11, fontFamily: 'var(--font-mono)' }}>⚡ QUICK LOGIN:</span>
+            <button
+              type="button"
+              className="quick-fill-btn"
+              onClick={() => quickFill('admin@ncc.local', 'admin123')}
+            >
+              🛡️ Admin
+            </button>
+            <button
+              type="button"
+              className="quick-fill-btn"
+              onClick={() => quickFill('mentor1@test.com', 'password123')}
+            >
+              🎖️ Mentor
+            </button>
+            <button
+              type="button"
+              className="quick-fill-btn"
+              onClick={() => quickFill('cadet1@test.com', 'password123')}
+            >
+              🎯 Cadet
+            </button>
           </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input id="password" value={password} onChange={e => setPassword(e.target.value)} type="password" required />
+
+          <form onSubmit={handleSubmit}>
+            {googleEnabled && (
+              <>
+                <button type="button" className="google-btn" onClick={handleGoogleLogin} aria-label="Continue with Google">
+                  <span className="google-g">G</span>
+                  Continue with Google Auth
+                </button>
+                <div className="auth-divider"><span>or use credentials</span></div>
+              </>
+            )}
+
+            <div className="field">
+              <div className="field-header">
+                <label htmlFor="email">Email Address</label>
+                <span className="guide-pill">IDENTITY</span>
+              </div>
+              <input
+                id="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                type="email"
+                placeholder="name@battalion.ncc"
+                required
+              />
+            </div>
+
+            <div className="field">
+              <div className="field-header">
+                <label htmlFor="password">Password</label>
+                <span className="guide-pill">SECURITY KEY</span>
+              </div>
+              <input
+                id="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+              <PasswordStrengthMeter password={password} />
+            </div>
+
+            <button className="primary" style={{ width: '100%', marginTop: 14 }} disabled={busy}>
+              {busy ? 'AUTHENTICATING ENCRYPTED SESSION…' : '⚡ SIGN IN TO COMMAND'}
+            </button>
+          </form>
+
+          <TagGuide title="System Access Roles" badge="GUIDE">
+            • <strong>Admin</strong>: Create battalions/colleges, verify mentors.<br/>
+            • <strong>Mentor</strong>: Evaluate cadets on 9 criteria (requires admin verification).<br/>
+            • <strong>Cadet</strong>: Track real-time ranking, scores, and AI performance insights.
+          </TagGuide>
+
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
+            <a href="/register/cadet" style={{ fontSize: 13, color: 'var(--cyan)', textDecoration: 'none', fontWeight: 600 }}>
+              + Register as Cadet →
+            </a>
+            <a href="/register/mentor" style={{ fontSize: 13, color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>
+              + Register as Mentor →
+            </a>
           </div>
-          <button className="primary" style={{ width: '100%', marginTop: 8 }} disabled={busy}>
-            {busy ? 'Signing in…' : 'Sign in'}
-          </button>
-          <p className="auth-note">
-            New to NCC Command? Choose your role to get started.
-          </p>
-          <div className="auth-links">
-            <a href="/register/cadet" style={{ fontSize: 12, color: 'var(--gold)' }}>Register as Cadet</a>
-            <a href="/register/mentor" style={{ fontSize: 12, color: 'var(--gold)' }}>Register as Mentor</a>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
