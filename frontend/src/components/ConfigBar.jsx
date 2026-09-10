@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { getApiBase, setApiBase } from '../api/client';
 
 export default function ConfigBar() {
-  const [value, setValue] = useState(getApiBase());
-  const [saved, setSaved] = useState(false);
+  const currentBase = getApiBase();
+  const [value, setValue] = useState(currentBase);
   const [status, setStatus] = useState('checking'); // 'connected' | 'error' | 'checking'
 
   const isLocal = typeof window !== 'undefined' && 
@@ -12,7 +12,7 @@ export default function ConfigBar() {
   async function checkHealth(urlToCheck) {
     setStatus('checking');
     try {
-      const target = (urlToCheck || value).replace(/\/$/, '');
+      const target = (urlToCheck || currentBase).replace(/\/$/, '');
       const healthUrl = target.endsWith('/api/v1') 
         ? target.replace('/api/v1', '/health')
         : `${target}/health`;
@@ -21,7 +21,6 @@ export default function ConfigBar() {
       if (res && res.ok) {
         setStatus('connected');
       } else {
-        // Fallback test on api/v1/battalions
         const res2 = await fetch(`${target}/battalions`, { method: 'GET', cache: 'no-cache' }).catch(() => null);
         setStatus(res2 && res2.ok ? 'connected' : 'error');
       }
@@ -31,34 +30,27 @@ export default function ConfigBar() {
   }
 
   useEffect(() => {
-    checkHealth(value);
-  }, [value]);
+    setValue(currentBase);
+    checkHealth(currentBase);
+  }, [currentBase]);
 
-  function save(newVal) {
-    const val = newVal !== undefined ? newVal : value;
+  function applyAndReload(newVal) {
+    const val = (newVal !== undefined ? newVal : value).trim();
     setApiBase(val);
-    setValue(val);
-    setSaved(true);
-    checkHealth(val);
-    setTimeout(() => setSaved(false), 2000);
-  }
-
-  function resetToOptimal() {
-    const optimal = isLocal ? 'http://127.0.0.1:8000/api/v1' : '/api/v1';
-    localStorage.removeItem('ncc_api_base');
-    save(optimal);
+    window.location.reload();
   }
 
   return (
     <div className="config-bar" style={{
       display: 'flex',
       alignItems: 'center',
-      gap: 12,
+      gap: 10,
       padding: '8px 16px',
       background: 'rgba(7, 12, 20, 0.95)',
       borderBottom: '1px solid var(--border)',
       fontSize: 12,
-      fontFamily: 'var(--font-mono)'
+      fontFamily: 'var(--font-mono)',
+      flexWrap: 'wrap'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <span style={{
@@ -77,8 +69,7 @@ export default function ConfigBar() {
       <input
         value={value}
         onChange={e => setValue(e.target.value)}
-        onBlur={() => save()}
-        onKeyDown={e => { if (e.key === 'Enter') save(); }}
+        onKeyDown={e => { if (e.key === 'Enter') applyAndReload(e.target.value); }}
         placeholder={isLocal ? 'http://127.0.0.1:8000/api/v1' : '/api/v1'}
         style={{
           background: 'rgba(0, 0, 0, 0.4)',
@@ -88,13 +79,30 @@ export default function ConfigBar() {
           color: 'var(--paper-bright)',
           fontFamily: 'var(--font-mono)',
           fontSize: 12,
-          minWidth: 260
+          minWidth: 220
         }}
       />
 
       <button
         type="button"
-        onClick={resetToOptimal}
+        onClick={() => applyAndReload(value)}
+        style={{
+          background: 'rgba(255, 184, 0, 0.12)',
+          border: '1px solid var(--gold)',
+          color: 'var(--gold)',
+          padding: '3px 10px',
+          borderRadius: 4,
+          cursor: 'pointer',
+          fontSize: 11,
+          fontWeight: 600
+        }}
+      >
+        💾 Save & Connect
+      </button>
+
+      <button
+        type="button"
+        onClick={() => applyAndReload(isLocal ? 'http://127.0.0.1:8000/api/v1' : '/api/v1')}
         style={{
           background: 'rgba(0, 240, 255, 0.1)',
           border: '1px solid var(--neon-cyan)',
@@ -106,18 +114,12 @@ export default function ConfigBar() {
           fontWeight: 600
         }}
       >
-        ⚡ Auto-Set
+        ⚡ Auto-Set ({isLocal ? 'Local' : 'Cloud /api/v1'})
       </button>
 
-      {saved && (
-        <span style={{ color: 'var(--neon-emerald)', fontSize: 11 }}>
-          ✓ Saved
-        </span>
-      )}
-
       {status === 'error' && (
-        <span style={{ color: 'var(--neon-crimson)', fontSize: 11, display: 'flex', alignItems: 'center', gap: 4 }}>
-          ⚠️ Backend Unreachable. Click <b>⚡ Auto-Set</b> or check connection.
+        <span style={{ color: 'var(--neon-crimson)', fontSize: 11 }}>
+          ⚠️ Unreachable. Click <b>⚡ Auto-Set</b> to fix.
         </span>
       )}
     </div>

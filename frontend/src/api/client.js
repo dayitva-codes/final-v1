@@ -1,22 +1,29 @@
 const isBrowser = typeof window !== 'undefined';
 const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-const DEFAULT_BASE = import.meta.env.VITE_API_BASE_URL || (isLocalhost ? 'http://127.0.0.1:8000/api/v1' : '/api/v1');
-
 export function getApiBase() {
-  if (!isBrowser) return DEFAULT_BASE;
+  if (!isBrowser) return '/api/v1';
+  const isHttps = window.location.protocol === 'https:';
   const stored = localStorage.getItem('ncc_api_base');
   
-  // If in production and stored URL is localhost, clear stale localhost URL
-  if (!isLocalhost && stored && (stored.includes('127.0.0.1') || stored.includes('localhost'))) {
-    localStorage.removeItem('ncc_api_base');
-    return DEFAULT_BASE;
+  // If running on HTTPS or live domain, NEVER allow http:// localhost
+  if (isHttps || !isLocalhost) {
+    if (!stored || stored.includes('127.0.0.1') || stored.includes('localhost') || stored.startsWith('http://')) {
+      localStorage.removeItem('ncc_api_base');
+      return '/api/v1';
+    }
+    return stored;
   }
-  return stored || DEFAULT_BASE;
+  
+  return stored || 'http://127.0.0.1:8000/api/v1';
 }
 
 export function setApiBase(url) {
-  localStorage.setItem('ncc_api_base', url.replace(/\/$/, ''));
+  if (!url || url === '/api/v1') {
+    localStorage.removeItem('ncc_api_base');
+  } else {
+    localStorage.setItem('ncc_api_base', url.replace(/\/$/, ''));
+  }
 }
 
 export function getToken() {
@@ -51,12 +58,13 @@ export async function apiRequest(path, { method = 'GET', body = null, form = fal
     }
   }
 
+  const base = getApiBase();
   let res;
   try {
-    res = await fetch(getApiBase() + path, { method, headers, body: payload });
+    res = await fetch(base + path, { method, headers, body: payload });
   } catch (e) {
     throw new ApiError(
-      `Could not reach the API at ${getApiBase()}. Check the API URL in the top bar and that the backend is running.`,
+      `Could not reach the API at ${base}. Please verify your backend server or switch endpoint.`,
       0, null
     );
   }
